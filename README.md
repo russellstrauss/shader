@@ -1,4 +1,4 @@
-# vue-shell
+# Shader demo
 
 ## Project setup
 ```
