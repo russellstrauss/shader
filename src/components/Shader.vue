@@ -5,6 +5,7 @@
 <script>
 
 	import * as THREE from '@/assets/vendors/three.js/build/three.module.js';
+	import { VRButton } from '@/assets/vendors/three.js/examples/jsm/webxr/VRButton.js';
 	import * as graphics from '@/assets/js/graphics.js'; const gfx = graphics.default;
 	
 	var renderer, scene, camera, controls, clock, time = 0, canvas;
@@ -25,20 +26,30 @@
 			canvas = renderer.domElement;
 			camera = gfx.setUpCamera(camera);
 			scene.background = new THREE.Color('#000');
-			controls = gfx.enableControls(controls, renderer, camera);
+			// controls = gfx.enableControls(controls, renderer, camera);
 			gfx.resizeRendererOnWindowResize(renderer, camera);
 			gfx.setCameraLocation(camera, new THREE.Vector3(10, 10, 10));
 			clock = new THREE.Clock(); clock.start();
 			
 			this.shader();
 			
-			var animate = () => {
-				requestAnimationFrame(animate);
-				controls.update();
+			// let animate = () => {
+			// 	requestAnimationFrame(animate);
+			// 	controls.update();
+			// 	this.eachFrame();
+			// 	renderer.render(scene, camera);
+			// };
+			// animate(); 
+			
+			this.enableVRMode();
+			
+			renderer.setAnimationLoop(() => {
+			//	controls.update();
 				this.eachFrame();
 				renderer.render(scene, camera);
-			};
-			animate(); 
+			});
+			
+			
 		},
 		
 		methods: {
@@ -47,6 +58,12 @@
 				time += clock.getDelta();
 				uniforms.iResolution.value.set(canvas.width, canvas.height, 1);
 				uniforms.iTime.value = time;
+			},
+			
+			enableVRMode: function() {
+				document.body.appendChild(VRButton.createButton(renderer));
+				renderer.xr.enabled = true;
+				camera.position.set(4, 4, 4);
 			},
 			
 			shader: function() {
@@ -90,11 +107,14 @@
 				
 				
 				let geometry = new THREE.BoxGeometry();
-				let material2 = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+				// const geometry = new THREE.TorusKnotGeometry(5, .5, 64, 8, 2, 3);
+				//let material2 = new THREE.MeshBasicMaterial({ color: 0xffff00 });
 				let cube = new THREE.Mesh(geometry, material);
 				scene.add( cube );
+				cube.position.z = -5;
 
-				camera.position.z = 5;
+				// camera.position.z = 5;
+				
 				
 				// scene.add(new THREE.Mesh(plane, material));
 			}
